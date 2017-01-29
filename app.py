@@ -8,6 +8,7 @@ import os
 from app_config import *
 from flask_login import LoginManager, login_required, login_user, current_user,logout_user
 from User import User
+from forms import LoginForm, RegistrationForm
 from bson.objectid import ObjectId
 
 app = Flask(__name__)
@@ -26,6 +27,11 @@ def load_user(username):
         return None
     
     return User(u['username'])
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -94,3 +100,9 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+if __name__ == '__main__':
+    #app.run(debug=True)
+    # get port assigned by OS else set it to 5000
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port,debug=True)

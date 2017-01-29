@@ -19,7 +19,7 @@ def ConfigSectionMap(section):
 
 config = ConfigSectionMap('database_config')
 
-client = MongoClient(config['server_url']))
+client = MongoClient(config['server_url'])
 # connecting to our mlab database
 db = client[config['db_server_name']]
 db.authenticate(config['db_user'], config['db_pass'])
