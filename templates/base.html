@@ -1,0 +1,45 @@
+<!doctype html>
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/fixes.html" as fixes %}
+
+
+{# Then, inside the head block, we apply these. To not replace the header,
+   ``super()`` is used: #}
+{% block head %}
+{{super()}}
+
+{#- Docs: http://pythonhosted.org/Flask-Bootstrap/macros.html#fixes
+   The sample application already contains the required static files. #}
+{{fixes.ie8()}}
+{%- endblock %}
+
+{% block title %}This is an example page{% endblock %}
+
+{% block navbar %}
+  <div class="navbar navbar-fixed-top container">
+    <a href="{{url_for('index')}}">Home</a>
+    {% if current_user.is_authenticated == False %}
+      <a href="{{url_for('login')}}">Login</a>
+      <a href="{{url_for('register')}}">Register</a>
+    {% elif  current_user.is_authenticated %}
+      <a href="{{url_for('logout')}}">Logout</a>
+    {% endif %}
+
+    
+    <div class="container">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="row vertical-align">
+            <ul class=flashes>
+            {% for message in messages %}
+              <div "margin-top=20px">
+                <li>{{ message }}</li>
+              </div>
+            {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+{% endblock %}
