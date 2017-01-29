@@ -24,7 +24,7 @@ client = MongoClient(config['server_url']))
 db = client[config['db_server_name']]
 db.authenticate(config['db_user'], config['db_pass'])
 
-hobby_coll = db[config['hobby_coll']]
+post_coll = db[config['post_coll']]
 user_coll = db[config['user_coll']]
 
 def update_sec_key():
