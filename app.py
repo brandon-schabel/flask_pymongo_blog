@@ -8,7 +8,7 @@ import os
 from app_config import *
 from flask_login import LoginManager, login_required, login_user, current_user,logout_user
 from User import User
-from forms import LoginForm, RegistrationForm
+from forms import LoginForm, RegistrationForm, NewPostForm
 from bson.objectid import ObjectId
 
 app = Flask(__name__)
@@ -100,6 +100,16 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route("/newpost", methods=['GET', 'POST'])
+@log_required
+def newpost():
+    form = NewPostForms(request.form)
+    if request.method == 'POST' and form.validate():
+        username = current_user.get_id()
+        post_title = form.post_title.data
+        post_content = form.post_data.data
+        
 
 if __name__ == '__main__':
     #app.run(debug=True)

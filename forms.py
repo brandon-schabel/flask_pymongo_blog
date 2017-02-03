@@ -10,3 +10,7 @@ class RegistrationForm(Form):
     confirm_email = StringField(u'Repeat Email', [validators.input_required()])
     password = PasswordField(u'Password', validators=[validators.input_required()])#, validators.EqualTo('confirm_pass', message='Passwords must match')
     confirm_pass = PasswordField(u'Repeat Password',validators=[validators.input_required()])
+
+class NewPostForm(Form):
+    post_title = StringField (u'Post Title', validators=[validators.input_required()])
+    post_content = TextAreaField(u'Post Name', validators=[validators.optional(), validators.length(max=20000)])
