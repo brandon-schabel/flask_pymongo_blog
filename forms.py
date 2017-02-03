@@ -1,4 +1,4 @@
-from wtforms import Form, BooleanField, StringField, IntegerField, PasswordField, validators
+from wtforms import Form, BooleanField, StringField, IntegerField, PasswordField, TextAreaField, validators
 
 class LoginForm(Form):
     login_email = StringField(u'Email',validators=[validators.input_required()])

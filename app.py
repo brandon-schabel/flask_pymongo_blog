@@ -57,7 +57,7 @@ def login():
                     user_obj = User(user['username'])
                     login_user(user_obj)
                     flash('You were successfully logged in')
-                    return redirect(url_for('view'))
+                    return redirect(url_for('viewpost'))
 
                 else:
                     error = "Invalid email or password."
@@ -69,7 +69,6 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    user_coll = db['user-database']
     form = RegistrationForm(request.form)
     error = None
     
@@ -102,14 +101,29 @@ def logout():
     return redirect(url_for('index'))
 
 @app.route("/newpost", methods=['GET', 'POST'])
-@log_required
+@login_required
 def newpost():
-    form = NewPostForms(request.form)
+    form = NewPostForm(request.form)
     if request.method == 'POST' and form.validate():
+
         username = current_user.get_id()
         post_title = form.post_title.data
-        post_content = form.post_data.data
-        
+        post_content = form.post_content.data
+
+        post_coll.insert({'username':username, 'post_title':post_title, 'post_content': post_content})
+
+        redirect(url_for('index'))
+    return render_template('newpost.html', form=form)
+
+@app.route("/viewpost")
+@login_required
+def viewpost():
+    all_post = []
+    for post in post_coll.find():
+        all_post.append(post)
+
+    return render_template('viewpost.html', all_post = all_post)
+         
 
 if __name__ == '__main__':
     #app.run(debug=True)
