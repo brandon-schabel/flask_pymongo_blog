@@ -26,3 +26,4 @@ __pycache__
 useful_packages.txt
 toolbox
 create_requirements.txt
+login_config.py

@@ -1,7 +1,7 @@
 from flask import Response, Flask, jsonify, make_response, url_for, render_template, \
     send_from_directory, request, url_for, redirect, flash
 from flask_login import LoginManager, login_required, login_user, current_user,logout_user
-
+from login_config import *
 
 @login_manager.user_loader
 def load_user(username):  
