@@ -27,3 +27,5 @@ useful_packages.txt
 toolbox
 create_requirements.txt
 login_config.py
+db_config.py
+sec_key.py

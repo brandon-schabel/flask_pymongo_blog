@@ -1,7 +1,21 @@
 from flask import Response, Flask, jsonify, make_response, url_for, render_template, \
-    send_from_directory, request, url_for, redirect, flash
+    send_from_directory, request, url_for, redirect, flash, Blueprint
 from flask_login import LoginManager, login_required, login_user, current_user,logout_user
-from login_config import *
+from datetime import datetime, timedelta
+from flask_bootstrap import Bootstrap
+from flask_bcrypt import Bcrypt
+from blueprints.login.login_config import *
+from bson.objectid import ObjectId
+
+mod = Blueprint('login',__name__, template_folder= 'templates')
+
+login_manager = LoginManager()
+#login_manager.init_app(mod)
+#login_manager.loging_view = 'login'
+
+@mod.record_once
+def on_load(state):
+    login_manager.init_app(state.app)
 
 @login_manager.user_loader
 def load_user(username):  
@@ -11,7 +25,7 @@ def load_user(username):
     
     return User(u['username'])
 
-@app.route('/login', methods=['GET', 'POST'])
+@mod.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
     form = LoginForm(request.form)
@@ -46,7 +60,7 @@ def login():
     return render_template('login/login.html', form=form, error = error)
 
     
-@app.route('/register', methods=['GET', 'POST'])
+@mod.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm(request.form)
     error = None
@@ -73,7 +87,7 @@ def register():
         
     return render_template('register.html', form=form,error = error)
 
-@app.route("/logout")
+@mod.route("/logout")
 @login_required
 def logout():
     logout_user()

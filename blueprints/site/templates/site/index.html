@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "site/base.html" %}
 
 {% block content %}
 
@@ -9,7 +9,7 @@
         {% if  current_user.is_authenticated %}
           Welcome, {{current_user.get_id() }}!
         {% else %}
-          <p>Please sign in <a href="{{url_for('login')}}">here</a> or register <a href="{{url_for('register')}}">here</a>. </p>
+          <p>Please sign in <a href="{{url_for('login.login')}}">here</a> or register <a href="{{url_for('login.register')}}">here</a>. </p>
         {% endif %}
       </div>
     </div>
