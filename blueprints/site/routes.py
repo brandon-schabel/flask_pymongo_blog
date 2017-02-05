@@ -9,15 +9,39 @@ from blueprints.site.db_config import *
 from blueprints.site.forms import NewPostForm
 from bson.objectid import ObjectId
 from blueprints.login.routes import mod
+from blueprints.site.User import User
+from pymongo import MongoClient
+from blueprints.site.login_config import *
+
 #from blueprints.login.routes import mod
 #app.register_blueprint(login.routes.mod, url_prefix='/login')
 mod = Blueprint('site',__name__, template_folder= 'templates')
 
 login_manager = LoginManager()
+client = MongoClient(server_url)
+db = client[db_server_name]
+db.authenticate(db_user, db_pass)
+user_coll = db[user_collection]
+post_coll = db[post_collection]
+#login_manager.init_app(mod)
+#login_manager.loging_view = 'login'
+
+
 
 @mod.record_once
 def on_load(state):
     login_manager.init_app(state.app)
+
+@login_manager.user_loader
+def load_user(username):  
+    u = user_coll.find_one({"username": username})
+    if not u:
+        return None
+    
+    '''blueprint = flask_global.current_app.blueprints[request.blueprint]
+
+    if hasattr(Blueprint, load_user):'''
+    return User(u['username'])
 
 @mod.route('/')
 def index():
@@ -37,7 +61,7 @@ def newpost():
         post_coll.insert(
             {'username': username, 'post_title': post_title, 'post_content': post_content})
 
-        redirect(url_for('index'))
+        return redirect(url_for('site.index'))
     return render_template('site/newpost.html', form=form)
 
 
