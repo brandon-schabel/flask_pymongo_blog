@@ -59,17 +59,40 @@ def newpost():
         post_content = form.post_content.data
 
         post_coll.insert(
-            {'username': username, 'post_title': post_title, 'post_content': post_content})
+            {'username': username,
+             'post_title': post_title, 
+             'post_content': post_content,
+             'created_datetime':datetime.utcnow(),
+             'edited_datetime': datetime.utcnow(),
+             'is_favorite' : False})
 
         return redirect(url_for('site.index'))
     return render_template('site/newpost.html', form=form)
 
 
-@mod.route("/viewpost")
+@mod.route("/viewallpost")
 @login_required
-def viewpost():
+def viewallpost():
     all_post = []
     for post in post_coll.find():
+        '''
+        print(post)
+        post_id = ObjectId(post['_id'])
+        print(post_id)
+        '''
+        post_id = str(ObjectId(post['_id']))
+        post['post_url'] = url_for('site.viewpost', id=post_id)
+        #print (post['post_url'])
         all_post.append(post)
+    return render_template('site/viewallpost.html', all_post=all_post)
 
-    return render_template('site/viewpost.html', all_post=all_post)
+
+@mod.route("/viewpost/<id>")
+@login_required
+def viewpost(id):
+    if post_coll.find_one({'_id':ObjectId(id)}):
+        post = post_coll.find_one({'_id':ObjectId(id)})
+    else:
+        print("Post does not exit")
+        return redirect(url_for('site.index'))
+    return str(post)

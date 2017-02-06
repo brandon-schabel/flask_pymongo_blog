@@ -61,7 +61,7 @@ def login():
                     user_obj = User(user['username'])
                     login_user(user_obj)
                     flash('You were successfully logged in')
-                    return redirect(url_for('site.viewpost'))
+                    return redirect(url_for('site.viewallpost'))
 
                 else:
                     error = "Invalid email or password."
@@ -91,7 +91,7 @@ def register():
                 }
                 user_coll.insert(data_to_log)
                 flash('You were successfully registered!')
-                return redirect(url_for('index'))
+                return redirect(url_for('site.index'))
             else:
                 error = "Username taken"
         else:

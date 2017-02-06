@@ -24,7 +24,7 @@
     {% elif  current_user.is_authenticated %}
       <a href="{{url_for('login.logout')}}">Logout</a>
       <a href="{{url_for('site.newpost')}}">New Post</a>
-      <a href="{{url_for('site.viewpost')}}">View Post</a>
+      <a href="{{url_for('site.viewallpost')}}">View Post</a>
     {% endif %}
 
     
