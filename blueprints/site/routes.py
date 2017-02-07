@@ -4,9 +4,8 @@ from flask_login import LoginManager, login_required, login_user, current_user,l
 from flask_bootstrap import Bootstrap
 from pymongo import MongoClient, DESCENDING, IndexModel, TEXT
 from datetime import datetime, timedelta
-from blueprints.site.db_config import *
 #from flask_login import LoginManager, login_required, login_user, current_user, logout_user
-from blueprints.site.forms import NewPostForm
+from blueprints.site.forms import NewPostForm, NewCommentForm
 from bson.objectid import ObjectId
 from blueprints.login.routes import mod
 from blueprints.site.User import User
@@ -23,6 +22,7 @@ db = client[db_server_name]
 db.authenticate(db_user, db_pass)
 user_coll = db[user_collection]
 post_coll = db[post_collection]
+comments_coll = db[comments_collection]
 #login_manager.init_app(mod)
 #login_manager.loging_view = 'login'
 
@@ -64,6 +64,7 @@ def newpost():
              'post_content': post_content,
              'created_datetime':datetime.utcnow(),
              'edited_datetime': datetime.utcnow(),
+             'post_comments': [],
              'is_favorite' : False})
 
         return redirect(url_for('site.index'))
@@ -74,12 +75,8 @@ def newpost():
 @login_required
 def viewallpost():
     all_post = []
-    for post in post_coll.find():
-        '''
-        print(post)
-        post_id = ObjectId(post['_id'])
-        print(post_id)
-        '''
+    for post in post_coll.find({'username':current_user.get_id()}):
+
         post_id = str(ObjectId(post['_id']))
         post['post_url'] = url_for('site.viewpost', id=post_id)
         #print (post['post_url'])
@@ -87,12 +84,45 @@ def viewallpost():
     return render_template('site/viewallpost.html', all_post=all_post)
 
 
-@mod.route("/viewpost/<id>")
+
+@mod.route("/viewpost/<id>", methods=['GET', 'POST'])
 @login_required
 def viewpost(id):
+    form = NewCommentForm(request.form)
+    comments =[]
+    if request.method == 'POST' and form.validate():
+        username = current_user.get_id()
+        comment = form.comment.data
+        created_datetime = datetime.utcnow()
+        edited_datetime = datetime.utcnow()
+
+        if post_coll.find_one({'_id':ObjectId(id)}):
+            comments_coll.insert({'post_id': ObjectId(id),
+                                    'username': current_user.get_id(),
+                                    'comment': comment,
+                                    'created_datetime': created_datetime,
+                                    'edited_datetime': edited_datetime})
+            return redirect(url_for('site.viewpost', id=id))
+
     if post_coll.find_one({'_id':ObjectId(id)}):
         post = post_coll.find_one({'_id':ObjectId(id)})
+        comments = []
+        if(comments_coll.find_one({'post_id':ObjectId(id)})):
+            for comment in comments_coll.find({'post_id':ObjectId(id)}):
+                comments.append(comment)
     else:
         print("Post does not exit")
         return redirect(url_for('site.index'))
-    return str(post)
+    return render_template('site/viewpost.html', comments=comments, post=post, form=form)
+
+
+
+'''
+def post_comment(post_id):
+    form = NewCommentForm(request.form)
+    if request.method == 'POST' and form.validate():
+        if post_coll.find_one({'_id':ObjectId(post_id)}):
+
+def view_comments(post_id):
+    for comment in 
+'''

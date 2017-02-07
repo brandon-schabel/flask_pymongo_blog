@@ -1,0 +1,54 @@
+{% extends "site/base.html" %}
+{% block content %}
+  <div class="container">
+    <h1> View Post </h1>
+    <div>
+        {{post}}
+    </div>
+    <div>
+        {% from "site/_formhelpers.html" import render_field %}
+    <form method=post>
+      <dl>
+        {{ render_field(form.comment) }}
+
+      </dl>
+      <button class="btn btn-default" type=submit >
+          <span>Post Comment</span>
+      </button>
+      </form>
+    <!--
+    <div class="media">
+        {{comments}}
+    </div>
+    -->
+
+    {% for comment in comments %}
+    <div class="media">
+        <div class="media-body">
+            <h4 class="media-heading">{{comment['username']}}
+                <small>{{comment['created_datetime']}}</small>
+                <!-- if created/edited datetime are diff, show edited datetime -->
+            </h4>
+            {{comment['comment']}}
+        <!-- Nested Comment -->
+        <!--
+        <div class="media">
+            <a class="pull-left" href="#">
+                <img class="media-object" src="http://placehold.it/64x64" alt="">
+            </a>
+        <div class="media-body">
+            <h4 class="media-heading">Nested Start Bootstrap
+                <small>August 25, 2014 at 9:30 PM</small>
+            </h4>
+            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+        </div>
+        </div>
+          End Nested Comment
+        </div>-->
+        </div>
+    </div>
+    
+  
+  {% endfor%}
+  </div>
+{% endblock %}

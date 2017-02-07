@@ -3,7 +3,7 @@
   <div class="container">
     <h1> Login </h1>
     {% from "site/_formhelpers.html" import render_field %}
-    <form method=post>
+    <form method=post class="form form-group">
       <dl>
         {{ render_field(form.post_title) }}
         {{ render_field(form.post_content) }}
