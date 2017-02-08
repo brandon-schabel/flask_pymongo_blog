@@ -1,4 +1,7 @@
-# flask_pymongo_blog
+# Flask Pymongo Blog
+
+--Just Read The Instructions--
+
 Blog app based on Flask and Pymongo.
 
 Below is instructions to get started connecting to your mongo database
@@ -30,3 +33,7 @@ data base, however you do need it for the app
 ```python
 sec_key = 'hello-hsfdsahfsdlakjfldsjfljfsd'
 ```
+
+to install all the required python packages, in the command line run "pip install -r requirements.txt"
+
+if you have added packages to the projects create a new requirements.txt "pip freeze > requirements.txt"
