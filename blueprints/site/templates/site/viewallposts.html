@@ -1,0 +1,32 @@
+{% extends "site/base.html" %}
+{% block content %}
+  <div class="container">
+    <h1> View Post </h1>
+    <!--
+    uncover this to view json data
+    <ul>
+    {% for post in all_post %}
+        <li>
+            {{post}}
+            <a href="{{post['post_url']}}"> View this post</a>
+        </li>
+    {% endfor %}
+    </ul>
+    -->
+  </div>
+
+  <div class="container">
+  {% for post in all_post %}
+    <div class="media">
+        <div class="media-body">
+            <h4 class="media-heading">{{post['username']}}
+                <small>{{post['created_datetime']}}</small>
+                <!-- if created/edited datetime are diff, show edited datetime -->
+            </h4>
+            {{post['post_content']}}
+            <a href="{{post['post_url']}}"><p>View This Post</p></a>
+        </div>
+    </div>
+  {% endfor %}
+  </div>
+{% endblock %}

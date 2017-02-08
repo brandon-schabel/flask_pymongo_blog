@@ -68,13 +68,13 @@ def newpost():
              'post_comments': [],
              'is_favorite' : False})
 
-        return redirect(url_for('site.index'))
+        return redirect(url_for('site.viewuserposts'))
     return render_template('site/newpost.html', form=form)
 
 
-@mod.route("/viewallpost")
+@mod.route("/viewuserposts")
 @login_required
-def viewallpost():
+def viewuserposts():
     '''
     view all current users post
     '''
@@ -85,15 +85,32 @@ def viewallpost():
         post_id = str(ObjectId(post['_id']))
         post['post_url'] = url_for('site.viewpost', id=post_id)
         all_post.append(post)
-    return render_template('site/viewallpost.html', all_post=all_post)
+    return render_template('site/viewuserposts.html', all_post=all_post)
+
+
+@mod.route("/viewallposts")
+@login_required
+def viewallposts():
+    '''
+    view all posts
+    '''
+
+    all_post = []
+    for post in post_coll.find():
+
+        post_id = str(ObjectId(post['_id']))
+        post['post_url'] = url_for('site.viewpost', id=post_id)
+        all_post.append(post)
+    return render_template('site/viewallposts.html', all_post=all_post)
 
 
 
 @mod.route("/viewpost/<id>", methods=['GET', 'POST'])
 @login_required
 def viewpost(id):
+    post = {}
     form = NewCommentForm(request.form)
-    comments =[]
+    comments = []
 
     '''
     check and validate comment form

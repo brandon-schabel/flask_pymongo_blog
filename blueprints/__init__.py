@@ -11,8 +11,12 @@ http://stackoverflow.com/questions/20136090/how-do-i-handle-login-in-flask-with-
 from blueprints.db_config import *
 
 app = Flask(__name__)
+
 bcrypt = Bcrypt(app)
 Bootstrap(app)
+
+def load_bcrypt():
+    return Bcrypt(app)
 
 login_manager = LoginManager()
 #login_manager.init_app(app)
@@ -26,7 +30,6 @@ app.register_blueprint(login.routes.mod, url_prefix='/login')
 app.register_blueprint(site.routes.mod)
 
 app.config.update(SECRET_KEY=sec_key)
-
 @login_manager.user_loader
 def load_user(username):  
     u = user_coll.find_one({"username": username})

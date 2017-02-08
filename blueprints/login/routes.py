@@ -10,6 +10,7 @@ from blueprints.login.forms import LoginForm, RegistrationForm
 from pymongo import MongoClient
 from blueprints import app
 from blueprints.login.User import User
+from blueprints import load_bcrypt
 
 client = MongoClient(server_url)
 db = client[db_server_name]
@@ -19,6 +20,10 @@ user_coll = db[user_collection]
 mod = Blueprint('login',__name__, template_folder= 'templates')
 
 login_manager = LoginManager()
+
+#loads bcrypt from main app
+#you can load bcrypt in a method using 'bcrypt = Bcrypt(app)'
+#bcrypt = load_bcrypt()
 
 @mod.record_once
 def on_load(state):
@@ -57,7 +62,7 @@ def login():
                     user_obj = User(user['username'])
                     login_user(user_obj)
                     flash('You were successfully logged in')
-                    return redirect(url_for('site.viewallpost'))
+                    return redirect(url_for('site.index'))
 
                 else:
                     error = "Invalid email or password."
@@ -70,6 +75,7 @@ def login():
     
 @mod.route('/register', methods=['GET', 'POST'])
 def register():
+    bcrypt = Bcrypt(app)
     form = RegistrationForm(request.form)
     error = None
     

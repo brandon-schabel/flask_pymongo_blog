@@ -5,9 +5,10 @@ Below is instructions to get started connecting to your mongo database
 ```python
 from pymongo import MongoClient
 ```
+
 if you want to configure this app rename "db_config_example" to "db_config.py" and fill out accordingly
 all of these are examples, leave the variable names alone
-```
+```python
 server_url = 'ds100000.mlab.com:10000' #db uri you want to connect to
 db_server_name = 'example_blog' #name of database
 ```
