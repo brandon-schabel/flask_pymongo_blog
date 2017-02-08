@@ -4,7 +4,7 @@ from flask_login import LoginManager, login_required, login_user, current_user,l
 from datetime import datetime, timedelta
 from flask_bootstrap import Bootstrap
 from flask_bcrypt import Bcrypt
-from blueprints.login.login_config import *
+from blueprints.db_config import *
 from bson.objectid import ObjectId
 from blueprints.login.forms import LoginForm, RegistrationForm
 from pymongo import MongoClient
@@ -19,9 +19,6 @@ user_coll = db[user_collection]
 mod = Blueprint('login',__name__, template_folder= 'templates')
 
 login_manager = LoginManager()
-
-#login_manager.init_app(mod)
-#login_manager.loging_view = 'login'
 
 @mod.record_once
 def on_load(state):
@@ -41,7 +38,6 @@ def login():
     bcrypt = Bcrypt(app)
     error = None
     form = LoginForm(request.form)
-
     if request.method == 'POST' and form.validate():
 
         #form data loader
@@ -78,10 +74,17 @@ def register():
     error = None
     
     if request.method == 'POST' and form.validate():
+        '''
+        checks and validates user RegistrationForm
+        '''
         username = form.login_username.data
         email = form.login_email.data
         password_hashed = bcrypt.generate_password_hash(form.password.data)
 
+        '''
+        checks to see if email and username already exist,
+        if test pass, log the new user into database, redirect to index
+        '''
         if (user_coll.find_one({'email':email})) == None:
             if (user_coll.find_one({'username': username})) == None:
                 data_to_log = {

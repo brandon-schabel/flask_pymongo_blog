@@ -4,19 +4,11 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_required, login_user, current_user,logout_user
 import flask.globals as flask_global
 from blueprints.User import User
-''' Response, jsonify, make_response, url_for, render_template, \
-    send_from_directory, request, url_for, redirect, flash, Blueprint
-from flask_bootstrap import Bootstrap
-from pymongo import MongoClient, DESCENDING, IndexModel, TEXT
-from datetime import datetime, timedelta
-from blueprints.db_config import *
-from flask_login import LoginManager, login_required, login_user, current_user, logout_user
-from bson.objectid import ObjectId
-
-how to get user_loader working accorss apps
+'''
+how to get user_loader working accross apps
 http://stackoverflow.com/questions/20136090/how-do-i-handle-login-in-flask-with-multiple-blueprints?noredirect=1&lq=1
 '''
-from blueprints.sec_key import *
+from blueprints.db_config import *
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)

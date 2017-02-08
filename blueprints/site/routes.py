@@ -4,18 +4,21 @@ from flask_login import LoginManager, login_required, login_user, current_user,l
 from flask_bootstrap import Bootstrap
 from pymongo import MongoClient, DESCENDING, IndexModel, TEXT
 from datetime import datetime, timedelta
-#from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from blueprints.site.forms import NewPostForm, NewCommentForm
 from bson.objectid import ObjectId
 from blueprints.login.routes import mod
 from blueprints.site.User import User
 from pymongo import MongoClient
-from blueprints.site.login_config import *
+from blueprints.db_config import *
 
-#from blueprints.login.routes import mod
-#app.register_blueprint(login.routes.mod, url_prefix='/login')
 mod = Blueprint('site',__name__, template_folder= 'templates')
 
+
+'''
+db initialization and login_manager init
+LoginManager() has be be initialized in any blueprint
+that uses the User class
+'''
 login_manager = LoginManager()
 client = MongoClient(server_url)
 db = client[db_server_name]
@@ -23,24 +26,22 @@ db.authenticate(db_user, db_pass)
 user_coll = db[user_collection]
 post_coll = db[post_collection]
 comments_coll = db[comments_collection]
-#login_manager.init_app(mod)
-#login_manager.loging_view = 'login'
 
-
-
+'''
+not sure if I need this or not,
+but loads login_manager for blueprint
+'''
 @mod.record_once
 def on_load(state):
     login_manager.init_app(state.app)
+
 
 @login_manager.user_loader
 def load_user(username):  
     u = user_coll.find_one({"username": username})
     if not u:
         return None
-    
-    '''blueprint = flask_global.current_app.blueprints[request.blueprint]
 
-    if hasattr(Blueprint, load_user):'''
     return User(u['username'])
 
 @mod.route('/')
@@ -74,12 +75,15 @@ def newpost():
 @mod.route("/viewallpost")
 @login_required
 def viewallpost():
+    '''
+    view all current users post
+    '''
+
     all_post = []
     for post in post_coll.find({'username':current_user.get_id()}):
 
         post_id = str(ObjectId(post['_id']))
         post['post_url'] = url_for('site.viewpost', id=post_id)
-        #print (post['post_url'])
         all_post.append(post)
     return render_template('site/viewallpost.html', all_post=all_post)
 
@@ -90,12 +94,20 @@ def viewallpost():
 def viewpost(id):
     form = NewCommentForm(request.form)
     comments =[]
+
+    '''
+    check and validate comment form
+    '''
     if request.method == 'POST' and form.validate():
         username = current_user.get_id()
         comment = form.comment.data
         created_datetime = datetime.utcnow()
         edited_datetime = datetime.utcnow()
 
+        '''
+        once from is valid, check if its in the right post
+        after that insert the comment into the comments-collection
+        '''
         if post_coll.find_one({'_id':ObjectId(id)}):
             comments_coll.insert({'post_id': ObjectId(id),
                                     'username': current_user.get_id(),
@@ -104,6 +116,9 @@ def viewpost(id):
                                     'edited_datetime': edited_datetime})
             return redirect(url_for('site.viewpost', id=id))
 
+    '''
+    retreives all comments and appends them to comments array
+    '''
     if post_coll.find_one({'_id':ObjectId(id)}):
         post = post_coll.find_one({'_id':ObjectId(id)})
         comments = []
@@ -114,15 +129,3 @@ def viewpost(id):
         print("Post does not exit")
         return redirect(url_for('site.index'))
     return render_template('site/viewpost.html', comments=comments, post=post, form=form)
-
-
-
-'''
-def post_comment(post_id):
-    form = NewCommentForm(request.form)
-    if request.method == 'POST' and form.validate():
-        if post_coll.find_one({'_id':ObjectId(post_id)}):
-
-def view_comments(post_id):
-    for comment in 
-'''

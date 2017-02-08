@@ -1,8 +1,3 @@
-# flask_pymongo_blog
-Blog app based on Flask and Pymongo.
-
-Below is instructions to get started connecting to your mongo database
-
 from pymongo import MongoClient
 #if you want to configure this app rename to "db_config.py" and fill out accordingly
 #all of these are examples!
