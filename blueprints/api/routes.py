@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from blueprints.site.forms import NewPostForm, NewCommentForm
 from bson.objectid import ObjectId
 from blueprints.login.routes import mod
-from blueprints.User import User
+from blueprints.site.User import User
 from pymongo import MongoClient
 from blueprints.db_config import *
 from flask import jsonify
@@ -45,12 +45,10 @@ def load_user(username):
 
     return User(u['username'])
 
-@mod.route('/')
-def index():
-    return render_template('site/index.html')
 
 
-@mod.route("/newpost", methods=['GET', 'POST'])
+
+@mod.route("/newpostapi", methods=['GET', 'POST'])
 @login_required
 def newpost():
     form = NewPostForm(request.form)
@@ -73,7 +71,7 @@ def newpost():
     return render_template('site/newpost.html', form=form)
 
 
-@mod.route("/viewuserposts")
+@mod.route("/viewuserpostsapi")
 @login_required
 def viewuserposts():
     '''
@@ -88,25 +86,7 @@ def viewuserposts():
         all_post.append(post)
     return render_template('site/viewuserposts.html', all_post=all_post)
 
-
-@mod.route("/viewallposts")
-@login_required
-def viewallposts():
-    '''
-    view all posts
-    '''
-
-    all_post = []
-    for post in post_coll.find():
-
-        post_id = str(ObjectId(post['_id']))
-        post['post_url'] = url_for('site.viewpost', id=post_id)
-        all_post.append(post)
-    return render_template('site/viewallposts.html', all_post=all_post)
-
-
-
-@mod.route("/viewpost/<id>", methods=['GET', 'POST'])
+@mod.route("/viewpostapi/<id>", methods=['GET', 'POST'])
 @login_required
 def viewpost(id):
     post = {}

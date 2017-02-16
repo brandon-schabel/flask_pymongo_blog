@@ -9,7 +9,7 @@ from bson.objectid import ObjectId
 from blueprints.login.forms import LoginForm, RegistrationForm
 from pymongo import MongoClient
 from blueprints import app
-from blueprints.login.User import User
+from blueprints.User import User
 from blueprints import load_bcrypt
 
 client = MongoClient(server_url)
