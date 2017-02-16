@@ -10,6 +10,7 @@ from blueprints.login.routes import mod
 from blueprints.site.User import User
 from pymongo import MongoClient
 from blueprints.db_config import *
+from flask import jsonify
 
 mod = Blueprint('site',__name__, template_folder= 'templates')
 
@@ -146,3 +147,19 @@ def viewpost(id):
         print("Post does not exit")
         return redirect(url_for('site.index'))
     return render_template('site/viewpost.html', comments=comments, post=post, form=form)
+
+@mod.route("/viewallpostsapi")
+def viewallpostsapi():
+    '''
+    view all posts
+    '''
+
+    all_post = []
+    for post in post_coll.find():
+        print(post)
+        post['_id'] = str(ObjectId(post['_id']))
+        post_id = str(ObjectId(post['_id']))
+        post['post_url'] = url_for('site.viewpost', id=post_id)
+        all_post.append(post)
+        print(post)
+    return jsonify(all_post)

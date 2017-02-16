@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_required, login_user, current_user,logout_user
 import flask.globals as flask_global
 from blueprints.User import User
+from flask_cors import CORS, cross_origin
 '''
 how to get user_loader working accross apps
 http://stackoverflow.com/questions/20136090/how-do-i-handle-login-in-flask-with-multiple-blueprints?noredirect=1&lq=1
@@ -14,6 +15,7 @@ app = Flask(__name__)
 
 bcrypt = Bcrypt(app)
 Bootstrap(app)
+CORS(app)
 
 def load_bcrypt():
     return Bcrypt(app)
